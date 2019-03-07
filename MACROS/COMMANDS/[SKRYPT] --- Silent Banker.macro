@@ -1,0 +1,76 @@
+// ##################################################### [SKRYPT] RETURN STACK
+if not @listexists RETURNtoMACRO
+  @createlist RETURNtoMACRO
+endif
+// ###########################################################################
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////////
+// [SKRYPT] --- Silent Banker
+// Open your bankbox silently without speaking or revealing yourself.
+//////////////////////////////////////////////////////////////////////////////
+if not @listexists BANKERS--All
+  @createlist BANKERS--All
+  pushlist BANKERS--All 0xbf    // Andaria        -- Orlantha
+  pushlist BANKERS--All 0xc0    // Andaria        -- Britta
+  pushlist BANKERS--All 0xc1    // Andaria        -- Roi
+  pushlist BANKERS--All 233719  // Cambria        -- Stanton [0x390f7]
+  pushlist BANKERS--All 257     // Cambria        -- Corbin  [0x101  ]
+  pushlist BANKERS--All 256     // Cambria        -- Susan   [0x100  ]
+  pushlist BANKERS--All 0x1c9   // Corpse Creek   -- Lea
+  pushlist BANKERS--All 0x14c   // Horseshoe Bay  -- Nolan
+  pushlist BANKERS--All 0x6a    // Prevalia       -- Ingmar
+  pushlist BANKERS--All 0x6b    // Prevalia       -- Tamma
+  pushlist BANKERS--All 0x6c    // Prevalia       -- Alodie
+  pushlist BANKERS--All 0x3e    // Prevalia       -- Errol
+  pushlist BANKERS--All 0x3d    // Prevalia       -- Tano
+  pushlist BANKERS--All 0x17d   // Outpost        -- Osmond
+  pushlist BANKERS--All 0x17e   // Outpost        -- Duane
+  pushlist BANKERS--All 0x1ea   // Shelter Island -- Len
+  pushlist BANKERS--All 0x1b1   // Terran         -- Brandi
+  pushlist BANKERS--All 0xdec62 // The Arena      -- Javan
+endif
+//////////////////////////////////////////////////////////////////////////////
+@unsetalias BANKERS--Found
+for 0 to BANKERS--All
+  if @findobject BANKERS--All[] 'any' 'ground' 'any' 12
+    @setalias BANKERS--Found 'found'
+    break
+  endif
+endfor
+//////////////////////////////////////////////////////////////////////////////
+if not @findobject BANKERS--Found 'any' 'ground' 'any' 12
+  @unsetalias BANKERS--Found
+  for 0 to BANKERS--All
+    if @findobject BANKERS--All[] 'any' 'ground' 'any' 18
+      @setalias BANKERS--Found 'found'
+      break
+    endif
+  endfor
+  if not @findobject BANKERS--Found 'any' 'ground' 'any' 18
+    headmsg '[- BANK NOT FOUND -]' 38
+  else
+    headmsg '[- BANK TOO FAR -]' 38
+  endif
+else
+  waitforcontext BANKERS--Found 1 2500
+  if not @findobject 'bank'
+    headmsg '[- BANK NOT FOUND -]' 38
+  endif
+endif
+//////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+// ##################################################### [SKRYPT] RETURN STACK
+if @list RETURNtoMACRO > 0
+  @removelist PLAYtheMACRO
+  @createlist PLAYtheMACRO
+  pushlist PLAYtheMACRO RETURNtoMACRO[0]
+  @poplist RETURNtoMACRO[0] 'front'
+  playmacro PLAYtheMACRO[0]
+else
+  //replay
+endif
+// ###########################################################################
