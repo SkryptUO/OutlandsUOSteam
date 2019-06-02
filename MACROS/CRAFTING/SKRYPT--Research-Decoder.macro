@@ -1,0 +1,258 @@
+// ==========================================================================
+// [SKRYPT] --- Research Decoder
+// - Cycles through every possible combination to auto decode lore notes.
+// - Place research material in pack and run this macro.
+// ==========================================================================
+//
+//
+//
+// #################################################### [SKRYPT] RETURN STACK
+if not @listexists RETURNtoMACRO
+  @createlist RETURNtoMACRO
+endif
+// ##########################################################################
+//
+//
+//
+/////////////////////////////////////////////////////////////////////////////
+if skill 'Cartography' < 100.0
+  headmsg 'Need atleast 100 Cartography' 38
+  stop
+elseif skill 'Detecting Hidden' < 100.0
+  headmsg 'Need atleast 100 Detecting Hidden' 38
+  stop
+elseif skill 'Item Identification' < 100.0
+  headmsg 'Need atleast 100 Item Identification' 38
+  stop
+endif
+/////////////////////////////////////////////////////////////////////////////
+@createlist RESEARCH--TRY--Carto
+@createlist RESEARCH--TRY--Detec
+@createlist RESEARCH--TRY--Ident
+@removelist RESEARCH--TRY
+if not @listexists RESEARCH--TRY
+  @createlist RESEARCH--TRY
+  // ---------------------
+  pushlist RESEARCH--TRY 0
+  pushlist RESEARCH--TRY 0
+  pushlist RESEARCH--TRY 5
+  // ---------------------
+  pushlist RESEARCH--TRY 0
+  pushlist RESEARCH--TRY 1
+  pushlist RESEARCH--TRY 4
+  // ---------------------
+  pushlist RESEARCH--TRY 0
+  pushlist RESEARCH--TRY 2
+  pushlist RESEARCH--TRY 3
+  // ---------------------
+  pushlist RESEARCH--TRY 0
+  pushlist RESEARCH--TRY 3
+  pushlist RESEARCH--TRY 2
+  // ---------------------
+  pushlist RESEARCH--TRY 0
+  pushlist RESEARCH--TRY 4
+  pushlist RESEARCH--TRY 1
+  // ---------------------
+  pushlist RESEARCH--TRY 0
+  pushlist RESEARCH--TRY 5
+  pushlist RESEARCH--TRY 0
+  // ---------------------
+  pushlist RESEARCH--TRY 1
+  pushlist RESEARCH--TRY 0
+  pushlist RESEARCH--TRY 4
+  // ---------------------
+  pushlist RESEARCH--TRY 1
+  pushlist RESEARCH--TRY 1
+  pushlist RESEARCH--TRY 3
+  // ---------------------
+  pushlist RESEARCH--TRY 1
+  pushlist RESEARCH--TRY 2
+  pushlist RESEARCH--TRY 2
+  // ---------------------
+  pushlist RESEARCH--TRY 1
+  pushlist RESEARCH--TRY 3
+  pushlist RESEARCH--TRY 1
+  // ---------------------
+  pushlist RESEARCH--TRY 1
+  pushlist RESEARCH--TRY 4
+  pushlist RESEARCH--TRY 0
+  // ---------------------
+  pushlist RESEARCH--TRY 2
+  pushlist RESEARCH--TRY 0
+  pushlist RESEARCH--TRY 3
+  // ---------------------
+  pushlist RESEARCH--TRY 2
+  pushlist RESEARCH--TRY 1
+  pushlist RESEARCH--TRY 2
+  // ---------------------
+  pushlist RESEARCH--TRY 2
+  pushlist RESEARCH--TRY 2
+  pushlist RESEARCH--TRY 1
+  // ---------------------
+  pushlist RESEARCH--TRY 2
+  pushlist RESEARCH--TRY 3
+  pushlist RESEARCH--TRY 0
+  // ---------------------
+  pushlist RESEARCH--TRY 3
+  pushlist RESEARCH--TRY 0
+  pushlist RESEARCH--TRY 2
+  // ---------------------
+  pushlist RESEARCH--TRY 3
+  pushlist RESEARCH--TRY 1
+  pushlist RESEARCH--TRY 1
+  // ---------------------
+  pushlist RESEARCH--TRY 3
+  pushlist RESEARCH--TRY 2
+  pushlist RESEARCH--TRY 0
+  // ---------------------
+  pushlist RESEARCH--TRY 4
+  pushlist RESEARCH--TRY 0
+  pushlist RESEARCH--TRY 1
+  // ---------------------
+  pushlist RESEARCH--TRY 4
+  pushlist RESEARCH--TRY 1
+  pushlist RESEARCH--TRY 0
+endif
+/////////////////////////////////////////////////////////////////////////////
+if not @findtype 0x72a4 0 'backpack'
+  headmsg 'No Research Found' 38
+  stop
+endif
+while @findtype 0x72a4 0 'backpack'
+  @setalias 'found--research' 'found'
+  if not @listexists RESEARCH--TRY or @list RESEARCH--TRY == 0
+    replay
+  elseif not @findobject 'found--research'
+    @unsetalias 'found--research'
+    @removelist RESEARCH--TRY
+    continue
+  elseif @gumpexists 0x96396a87
+    replygump 0x96396a87 0
+  elseif not @gumpexists 0x2a496f8c
+    useobject 'found--research'
+    pause 601
+  else
+    headmsg 'Decoding ...' 43
+    @clearjournal
+    while @list RESEARCH--TRY > 0
+      @headmsg '...' 43 'found--research'
+      //////////////////////////////////////////////
+      if not @findobject 'found--research' or @injournal "complete your" "system"
+        @headmsg 'Lore Note Decoded' 93 'found--research'
+        @clearjournal
+        @unsetalias 'found--research'
+        @removelist RESEARCH--TRY
+        break
+      endif
+      //////////////////////////////////////////////
+      @clearlist RESEARCH--TRY--Carto
+      @clearlist RESEARCH--TRY--Detec
+      @clearlist RESEARCH--TRY--Ident
+      //////////////////////////////////////////////
+      pushlist RESEARCH--TRY--Carto RESEARCH--TRY[0]
+      poplist RESEARCH--TRY 'front'
+      pushlist RESEARCH--TRY--Detec RESEARCH--TRY[0]
+      poplist RESEARCH--TRY 'front'
+      pushlist RESEARCH--TRY--Ident RESEARCH--TRY[0]
+      poplist RESEARCH--TRY 'front'
+      //////////////////////////////////////////////
+      replygump 0x2a496f8c 5
+      waitforgump 0x2a496f8c 5000
+      //////////////////////////////////////////////
+      if @inlist RESEARCH--TRY--Carto 1
+        for 0 to 1
+          replygump 0x2a496f8c 2
+          waitforgump 0x2a496f8c 5000
+        endfor
+      elseif @inlist RESEARCH--TRY--Carto 2
+        for 0 to 2
+          replygump 0x2a496f8c 2
+          waitforgump 0x2a496f8c 5000
+        endfor
+      elseif @inlist RESEARCH--TRY--Carto 3
+        for 0 to 3
+          replygump 0x2a496f8c 2
+          waitforgump 0x2a496f8c 5000
+        endfor
+      elseif @inlist RESEARCH--TRY--Carto 4
+        for 0 to 4
+          replygump 0x2a496f8c 2
+          waitforgump 0x2a496f8c 5000
+        endfor
+      elseif @inlist RESEARCH--TRY--Carto 5
+        for 0 to 5
+          replygump 0x2a496f8c 2
+          waitforgump 0x2a496f8c 5000
+        endfor
+      endif
+      //////////////////////////////////////////////
+      if @inlist RESEARCH--TRY--Detec 1
+        for 0 to 1
+          replygump 0x2a496f8c 3
+          waitforgump 0x2a496f8c 5000
+        endfor
+      elseif @inlist RESEARCH--TRY--Detec 2
+        for 0 to 2
+          replygump 0x2a496f8c 3
+          waitforgump 0x2a496f8c 5000
+        endfor
+      elseif @inlist RESEARCH--TRY--Detec 3
+        for 0 to 3
+          replygump 0x2a496f8c 3
+          waitforgump 0x2a496f8c 5000
+        endfor
+      elseif @inlist RESEARCH--TRY--Detec 4
+        for 0 to 4
+          replygump 0x2a496f8c 3
+          waitforgump 0x2a496f8c 5000
+        endfor
+      elseif @inlist RESEARCH--TRY--Detec 5
+        for 0 to 5
+          replygump 0x2a496f8c 3
+          waitforgump 0x2a496f8c 5000
+        endfor
+      endif
+      //////////////////////////////////////////////
+      if @inlist RESEARCH--TRY--Ident 1
+        for 0 to 1
+          replygump 0x2a496f8c 4
+          waitforgump 0x2a496f8c 5000
+        endfor
+      elseif @inlist RESEARCH--TRY--Ident 2
+        for 0 to 2
+          replygump 0x2a496f8c 4
+          waitforgump 0x2a496f8c 5000
+        endfor
+      elseif @inlist RESEARCH--TRY--Ident 3
+        for 0 to 3
+          replygump 0x2a496f8c 4
+          waitforgump 0x2a496f8c 5000
+        endfor
+      elseif @inlist RESEARCH--TRY--Ident 4
+        for 0 to 4
+          replygump 0x2a496f8c 4
+          waitforgump 0x2a496f8c 5000
+        endfor
+      elseif @inlist RESEARCH--TRY--Ident 5
+        for 0 to 5
+          replygump 0x2a496f8c 4
+          waitforgump 0x2a496f8c 5000
+        endfor
+      endif
+      //////////////////////////////////////////////
+    endwhile
+  endif
+endwhile
+/////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+// #################################################### [SKRYPT] RETURN STACK
+if not @list RETURNtoMACRO > 0
+  @removelist PLAYtheMACRO
+  @createlist PLAYtheMACRO
+  pushlist PLAYtheMACRO RETURNtoMACRO[0]
+  @poplist RETURNtoMACRO[0] 'front'
+  playmacro PLAYtheMACRO[0]
+endif
+// ##########################################################################
